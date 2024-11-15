@@ -14,11 +14,28 @@ export const Signup = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [passwordError, setPasswordError] = useState("");
     const navigate = useNavigate();
 
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_#])[A-Za-z\d@$!%*?&_#]{8,}$/;
+
+    const handlePasswordChange = (e) => {
+        const value = e.target.value;
+        setPassword(value);
+
+        // Validate password and set error message if invalid
+        if (!passwordRegex.test(value)) {
+            setPasswordError("Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.");
+        } else {
+            setPasswordError("");
+        }
+    };
 
     const handleSignup = (e) => {
         e.preventDefault();
+        if (passwordError) {
+            return; // Prevent form submission if there's a password error
+        }
         axios.post("http://localhost:3002/signup", { name, email, password })
             .then(result => {
                 if (result.status === 201) {
@@ -51,7 +68,7 @@ export const Signup = () => {
                 <form onSubmit={handleSignup}>
                     <TextField onChange={(e)=>setName(e.target.value)} name="name" required style={row} sx={{label: { fontWeight: '700', fontSize:"1.3rem" }}} fullWidth type="text" label="Enter Name" ></TextField>
                     <TextField onChange={(e)=>setEmail(e.target.value)} name="email" required style={row} sx={{label: { fontWeight: '700', fontSize:"1.3rem" }}} fullWidth label="Email" variant="outlined" type="email" placeholder="Enter Email" ></TextField>              
-                    <TextField onChange={(e)=>setPassword(e.target.value)} name="password" required style={row} sx={{label: { fontWeight: '700', fontSize:"1.3rem" }}} fullWidth label="Password" variant="outlined" type="password" placeholder="Enter Password" ></TextField>
+                    <TextField onChange={handlePasswordChange} name="password" required style={row} sx={{label: { fontWeight: '700', fontSize:"1.3rem" }}} fullWidth label="Password" variant="outlined" type="password" placeholder="Enter Password" error={!!passwordError} helperText={passwordError}></TextField>
                     <Button style={btnStyle} variant="contained" type="submit">SignUp</Button>                    
                 </form>
 
@@ -61,4 +78,3 @@ export const Signup = () => {
     
   )
 }
-
