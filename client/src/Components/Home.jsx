@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import AfterHome from "./AfterHome"; // Import the AfterHome component
 
 export const Home = () => {
     const location = useLocation();
@@ -29,9 +30,6 @@ export const Home = () => {
         return <center><h1>Loading...</h1></center>;
     }
 
-    return (
-        <center>
-            <h1 style={{color:"white", fontSize:"5rem"}}>Welcome Home {user && user.name} !!!</h1>
-        </center>
-    );
-}
+    // Render AfterHome component after successful login
+    return <AfterHome user={user} />;
+};
